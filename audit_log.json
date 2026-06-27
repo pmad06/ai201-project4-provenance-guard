@@ -1,0 +1,11 @@
+[
+  {
+    "content_id": "7522d08c-4698-49ea-a368-bb7316aafa69",
+    "creator_id": "test-user-1",
+    "timestamp": "2026-06-27T01:15:25.202631Z",
+    "attribution": "likely_ai",
+    "confidence": 0.8,
+    "llm_score": 0.8,
+    "status": "classified"
+  }
+]
