@@ -7,5 +7,45 @@
     "confidence": 0.8,
     "llm_score": 0.8,
     "status": "classified"
+  },
+  {
+    "content_id": "fa92b54c-01ae-4d30-9965-563453e94a4e",
+    "creator_id": "test-1",
+    "timestamp": "2026-06-27T01:20:11.357128Z",
+    "attribution": "uncertain",
+    "confidence": 0.56,
+    "llm_score": 0.8,
+    "stylo_score": 0.201,
+    "status": "classified"
+  },
+  {
+    "content_id": "d41e618e-2048-4765-b8ea-04bc97f54489",
+    "creator_id": "test-2",
+    "timestamp": "2026-06-27T01:20:21.345901Z",
+    "attribution": "likely_human",
+    "confidence": 0.161,
+    "llm_score": 0.2,
+    "stylo_score": 0.103,
+    "status": "classified"
+  },
+  {
+    "content_id": "7ab41adc-f98d-4dbd-a29b-59de2de98adb",
+    "creator_id": "test-3",
+    "timestamp": "2026-06-27T01:20:32.918009Z",
+    "attribution": "uncertain",
+    "confidence": 0.472,
+    "llm_score": 0.7,
+    "stylo_score": 0.129,
+    "status": "classified"
+  },
+  {
+    "content_id": "ded5f23c-7579-45bb-ab28-39e3809cb2f2",
+    "creator_id": "test-4",
+    "timestamp": "2026-06-27T01:22:03.579994Z",
+    "attribution": "likely_human",
+    "confidence": 0.188,
+    "llm_score": 0.2,
+    "stylo_score": 0.17,
+    "status": "classified"
   }
 ]

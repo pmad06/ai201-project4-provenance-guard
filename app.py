@@ -7,6 +7,8 @@ import uuid
 import json
 from datetime import datetime
 from groq import Groq
+import re
+
 
 load_dotenv()
 
@@ -61,6 +63,30 @@ def read_log():
         return []
     with open(LOG_FILE, "r") as f:
         return json.load(f)
+
+def stylometric_signal(text):
+    sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+    words = text.lower().split()
+
+    if len(sentences) < 2 or len(words) < 10:
+        return 0.5  # not enough data, return neutral
+
+    # sentence length variance (low variance = more AI-like)
+    lengths = [len(s.split()) for s in sentences]
+    mean_len = sum(lengths) / len(lengths)
+    variance = sum((l - mean_len) ** 2 for l in lengths) / len(lengths)
+    variance_score = 1 / (1 + variance * 0.1)  # high variance = lower score (more human)
+
+    # type-token ratio (low TTR = more AI-like)
+    ttr = len(set(words)) / len(words)
+    ttr_score = 1 - ttr  # low TTR = high AI score
+
+    # punctuation density (high density = more AI-like)
+    punct_count = sum(1 for c in text if c in ',;:()—–')
+    punct_density = punct_count / len(words)
+    punct_score = min(punct_density * 5, 1.0)
+
+    return round((variance_score + ttr_score + punct_score) / 3, 3)
     
 @app.route("/submit", methods=["POST"])
 def submit():
@@ -70,22 +96,34 @@ def submit():
     content_id = str(uuid.uuid4())
 
     llm_score = groq_signal(text)
+    stylo_score = stylometric_signal(text)
+
+    # weighted average: 60% LLM, 40% stylometric
+    confidence = round(0.6 * llm_score + 0.4 * stylo_score, 3)
+
+    if confidence >= 0.70:
+        attribution = "likely_ai"
+    elif confidence >= 0.40:
+        attribution = "uncertain"
+    else:
+        attribution = "likely_human"
 
     entry = {
         "content_id": content_id,
         "creator_id": creator_id,
         "timestamp": datetime.utcnow().isoformat() + "Z",
-        "attribution": "likely_ai" if llm_score > 0.5 else "likely_human",
-        "confidence": llm_score,
+        "attribution": attribution,
+        "confidence": confidence,
         "llm_score": llm_score,
+        "stylo_score": stylo_score,
         "status": "classified"
     }
     write_log(entry)
 
     return jsonify({
         "content_id": content_id,
-        "attribution": entry["attribution"],
-        "confidence": llm_score,
+        "attribution": attribution,
+        "confidence": confidence,
         "label": "placeholder — coming in M5"
     })
 
